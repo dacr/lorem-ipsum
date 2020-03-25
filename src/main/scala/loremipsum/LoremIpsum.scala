@@ -78,9 +78,10 @@ object LoremIpsum {
    * Generate paragraphs of lorem ipsum
    *
    * @param wordCount how many words all generated paragraph must contains
+   * @param alwaysStartWithLorem shall the first paragraph starts with Lorem Ipsum ? default is false because of performance penalty
    * @return the list of generated paragraphs
    */
-  def generate(wordCount: Int): List[Paragraph] = {
+  def generate(wordCount: Int, alwaysStartWithLorem:Boolean = false): List[Paragraph] = {
     @annotation.tailrec
     def worker(remain: Int, iteration: Int, accu: List[Paragraph]): List[Paragraph] = {
       samples(iteration % samples.size) match {
@@ -88,7 +89,10 @@ object LoremIpsum {
         case (paragraph, count) => worker(remain - count, iteration + 1, paragraph :: accu)
       }
     }
-    if (wordCount <= 0) Nil else worker(wordCount, 0, List.empty)
+    if (wordCount <= 0) Nil else {
+      val results = worker(wordCount, 0, List.empty)
+      if (alwaysStartWithLorem) results.reverse else results
+    }
   }
 
 }

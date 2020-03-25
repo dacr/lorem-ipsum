@@ -65,4 +65,13 @@ class LoremIpsumTest extends FlatSpec with should.Matchers {
     val paragraphs = LoremIpsum.generate(1042)
     LoremIpsum.generate(paragraphs.headOption.value.words.size).size shouldBe 1
   }
+
+  it should "always generate a first paragraph starting with Lorem Ipsum" in {
+    val tmpParagraphs = LoremIpsum.generate(1042)
+    val firstParagraphSize = tmpParagraphs.headOption.value.words.size
+    val secondParagraphSize = tmpParagraphs.drop(1).headOption.value.words.size
+
+    val paragraphs = LoremIpsum.generate(firstParagraphSize + secondParagraphSize, alwaysStartWithLorem = true)
+    paragraphs.headOption.value.text() should startWith regex "Lorem ipsum"
+  }
 }
