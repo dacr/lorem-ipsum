@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 David Crosson
+ * Copyright 2020 David Crosson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,53 @@
 
 package loremipsum
 
-import org.scalatest.Matchers._
 import org.scalatest._
+import org.scalatest.matchers._
+import org.scalatest.OptionValues._
 
+class LoremIpsumTest extends FlatSpec with should.Matchers {
 
-class LoremIpsumTest extends FunSuite {
-
-  test("zero value") {
+  "LoremIpsum" should "generate nothing with zero word count" in {
     LoremIpsum.generate(0) should equal(Nil)
+
   }
-  test("negative value") {
+
+  it should "generate nothing with negative word count" in {
     LoremIpsum.generate(-100) should equal(Nil)
   }
-  test("one paragraphe with several words") {
-    LoremIpsum.generate(1) should equal(Paragraph(List("Lorem"))::Nil)
-    LoremIpsum.generate(2) should equal(Paragraph(List("Lorem", "ipsum"))::Nil)
-  }
-  test("paragraph to text") {
-    LoremIpsum.generate(1).map(_.text()) should equal(List("Lorem."))
-    LoremIpsum.generate(2).map(_.text()) should equal(List("Lorem ipsum."))
+
+  it should "be able to generate a paragraph of words" in {
+    val paragraphs = LoremIpsum.generate(5)
+    paragraphs.size should be(1)
+    paragraphs.head.words.size should be(5)
   }
 
-  test("word count check") {
+  it should "generate the right words count" in {
     LoremIpsum.generate(42).map(_.words.size).sum should equal(42)
     LoremIpsum.generate(1001).map(_.words.size).sum should equal(1001)
   }
 
+  it should "always start with Lorem ipsum by default" in {
+    LoremIpsum.generate(2) should equal(Paragraph(List("Lorem", "ipsum"))::Nil)
+  }
+
+  it should "generate paragraph starting with a Capitalize word" in {
+    val paragraphsText = LoremIpsum.generate(5).map(_.text)
+    val firstWord = paragraphsText.headOption.value
+    firstWord.headOption.value.isUpper shouldBe true
+    firstWord.tail.exists(_.isUpper) shouldBe false
+  }
+
+  it should "generate paragraphs text with last sentence ending with a dot" in {
+    LoremIpsum.generate(5).headOption.value.text.split("\\s+").last should fullyMatch regex "[a-zA-Z]+[.]"
+  }
+
+  it should "be able to generate several paragraphs" in {
+    LoremIpsum.generate(1042).size should be > (1)
+  }
+
+  it should "not generate an empty paragraphs" in {
+    val paragraphs = LoremIpsum.generate(1042)
+    LoremIpsum.generate(paragraphs.headOption.value.words.size).size shouldBe 1
+  }
 }

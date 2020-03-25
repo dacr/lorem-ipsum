@@ -1,16 +1,39 @@
+/*
+ * Copyright 2020 David Crosson
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package loremipsum
 
-case class Paragraph(words:List[String]) {
-  def text()={
-    val last=words.last.replaceAll("[^a-zA-Z]", "")+"."
-    if (words.init!=Nil) words.init.mkString(" ")+" "+last else last
+case class Paragraph(words: List[String]) {
+  /**
+   * Format the paragraph into a string starting with a capitalize words and a final dot.
+   *
+   * @return the paragraph as a string
+   */
+  def text(): String = {
+    val last = words.last.replaceAll("[^a-zA-Z]", "") + "."
+    if (words.init != Nil) words.init.mkString(" ") + " " + last else last
   }
 }
 
+/**
+ * LoremIpsum paragraph generator
+ */
 object LoremIpsum {
-
-  // http://fr.lipsum.com/
-  val samples = Array( 
+  // The following sentences come from : http://fr.lipsum.com/
+  private val samples = Array(
     """Lorem ipsum dolor sit amet, consectetur adipiscing elit,
       |sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
       |Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -46,20 +69,26 @@ object LoremIpsum {
       |rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus
       |maiores alias consequatur aut perferendis doloribus asperiores repellat.
       |"""
-      )
+  )
     .map(_.stripMargin.trim.replaceAll("""\s{2,}""", " "))
     .map(_.split("""\s+"""))
     .map(txt => Paragraph(txt.toList) -> txt.size)
 
+  /**
+   * Generate paragraphs of lorem ipsum
+   *
+   * @param wordCount how many words all generated paragraph must contains
+   * @return the list of generated paragraphs
+   */
   def generate(wordCount: Int): List[Paragraph] = {
     @annotation.tailrec
-    def worker(remain:Int, iteration:Int, accu:List[Paragraph]):List[Paragraph] = {
+    def worker(remain: Int, iteration: Int, accu: List[Paragraph]): List[Paragraph] = {
       samples(iteration % samples.size) match {
-        case (paragraph, count) if remain <= count => Paragraph(paragraph.words.take(remain))::accu
-        case (paragraph, count) => worker(remain - count, iteration+1, paragraph::accu)
+        case (paragraph, count) if remain <= count => Paragraph(paragraph.words.take(remain)) :: accu
+        case (paragraph, count) => worker(remain - count, iteration + 1, paragraph :: accu)
       }
     }
-    if (wordCount <=0) Nil else worker(wordCount,0,List.empty)
+    if (wordCount <= 0) Nil else worker(wordCount, 0, List.empty)
   }
 
 }
