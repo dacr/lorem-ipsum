@@ -16,15 +16,14 @@
 
 package loremipsum
 
-import org.scalatest._
+import org.scalatest.flatspec._
 import org.scalatest.matchers._
 import org.scalatest.OptionValues._
 
-class LoremIpsumTest extends FlatSpec with should.Matchers {
+class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
 
   "LoremIpsum" should "generate nothing with zero word count" in {
     LoremIpsum.generate(0) should equal(Nil)
-
   }
 
   it should "generate nothing with negative word count" in {
