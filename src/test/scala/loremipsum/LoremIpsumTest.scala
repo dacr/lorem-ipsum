@@ -73,4 +73,9 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
     val paragraphs = LoremIpsum.generate(firstParagraphSize + secondParagraphSize, alwaysStartWithLorem = true)
     paragraphs.headOption.value.text() should startWith regex "Lorem ipsum"
   }
+
+  it should "be able to regenerate paragraphs from sentences" in {
+    val paragraphs = LoremIpsum.generate(200,sentencesBased=true, randomize=true, alwaysStartWithLorem=true)
+    paragraphs.flatMap(_.words).find(_.size == 0) shouldBe None
+  }
 }
