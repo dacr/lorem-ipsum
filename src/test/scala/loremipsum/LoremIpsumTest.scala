@@ -79,10 +79,12 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
     paragraphs.flatMap(_.words).find(_.size == 0) shouldBe None
   }
 
-  it should "generate coherent punctuation" ignore { // TODO enhancement generated text
-    val text = LoremIpsum.generate(2000, sentencesBased = true, truncate = false).map(_.text()).mkString("\n\n")
-    text should not include regex("[,?.;:]{2,}")
-    text should not include regex("[,][^ ]")
-    text should not include regex("[^a-zA-Z][.]")
+  for { (mode, value) <- List("sentences"->true, "paragraphs"->false)} {
+    it should s"generate coherent punctuation in $mode mode" in {
+      val text = LoremIpsum.generate(2000, sentencesBased = value, truncate = false).map(_.text()).mkString("\n\n")
+      text should not include regex("[,?.;:]{2,}")
+      text should not include regex("[,][^ ]")
+      text should not include regex("[^a-zA-Z][.]")
+    }
   }
 }

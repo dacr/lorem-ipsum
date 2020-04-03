@@ -49,9 +49,8 @@ trait LoremIpsumBase {
   lazy val sentences:Vector[(Sentence,Int)] =
     corpus
       .map(_.trim.replaceAll("""\s{2,}""", " "))
-      .flatMap(_.split("""\s*[.]\s*"""))
-      .map(_.split("""\s+"""))
-      .map(s => s.init.toList:+(s.last+"."))
+      .flatMap(_.split("""\s*(?<=[,.:;])\s*"""))
+      .map(_.split("""\s+""").toList)
       .map(words => words -> words.size)
 
   /**
