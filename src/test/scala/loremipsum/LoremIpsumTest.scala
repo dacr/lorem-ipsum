@@ -79,10 +79,20 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
     paragraphs.flatMap(_.words).find(_.size == 0) shouldBe None
   }
 
+  it should "only provide valid sentences (extracted from the given corpus" in {
+    LoremIpsum.sentences.forall{case (sentence, wordCount)=>
+      println(sentence.mkString(" "))
+      sentence.forall(_.trim.size > 0) && wordCount > 0
+    }
+  }
+
   for { (mode, value) <- List("sentences"->true, "paragraphs"->false)} {
     it should s"generate coherent punctuation in $mode mode" in {
-      val text = LoremIpsum.generate(2000, sentencesBased = value, truncate = false).map(_.text()).mkString("\n\n")
-      println(text)
+      val text =
+        LoremIpsum
+          .generate(4242, sentencesBased = value, truncate = false, randomize = false)
+          .map(_.text())
+          .mkString("\n\n")
       text should not include regex("[,?.;:]{2,}")
       text should not include regex("[,][^ ]")
       text should not include regex("[^a-zA-Z][.]")
