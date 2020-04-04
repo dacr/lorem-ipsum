@@ -79,9 +79,8 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
     paragraphs.flatMap(_.words).find(_.size == 0) shouldBe None
   }
 
-  it should "only provide valid sentences (extracted from the given corpus" in {
+  it should "only provide valid sentences (extracted from the given corpus)" in {
     LoremIpsum.sentences.forall{case (sentence, wordCount)=>
-      println(sentence.mkString(" "))
       sentence.forall(_.trim.size > 0) && wordCount > 0
     }
   }
@@ -93,12 +92,12 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
           .generate(4242, sentencesBased = value, truncate = false, randomize = false)
           .map(_.text())
           .mkString("\n\n")
-      text should not include regex("[,?.;:]{2,}")
-      text should not include regex("[,][^ ]")
-      text should not include regex("[^a-zA-Z][.]")
-      text should not include regex("[.] [a-z]")
-      text should not include regex("^[a-z]")
-      text should not include regex("[^.]$")
+      text should not include regex("[,?.;:]{2,}") // never two consecutive punctuation
+      text should not include regex("[,][^ ]") // Always a space after a comma
+      text should not include regex("[^a-zA-Z][.]") // Always an alphabetical character before a dot
+      text should not include regex("[.] [a-z]") // Uppercase always after a dot
+      text should not include regex("^[a-z]") // Always starting with an uppercase character
+      text should not include regex("[^.]$") // Always finishing with a dot
     }
   }
 }
