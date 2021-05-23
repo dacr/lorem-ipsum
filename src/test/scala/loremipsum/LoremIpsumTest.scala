@@ -46,14 +46,14 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
   }
 
   it should "generate paragraph starting with a Capitalize word" in {
-    val paragraphsText = LoremIpsum.generate(5).map(_.text)
+    val paragraphsText = LoremIpsum.generate(5).map(_.text())
     val firstWord = paragraphsText.headOption.value
     firstWord.headOption.value.isUpper shouldBe true
     firstWord.tail.exists(_.isUpper) shouldBe false
   }
 
   it should "generate paragraphs text with last sentence ending with a dot" in {
-    LoremIpsum.generate(5).headOption.value.text.split("\\s+").last should fullyMatch regex "[a-zA-Z]+[.]"
+    LoremIpsum.generate(5).headOption.value.text().split("\\s+").last should fullyMatch regex "[a-zA-Z]+[.]"
   }
 
   it should "be able to generate several paragraphs" in {
