@@ -28,7 +28,7 @@ println(story)
 
 [tests-workflow]: https://github.com/dacr/lorem-ipsum/actions/workflows/scala.yml/badge.svg
 
-[mavenImg]: https://img.shields.io/maven-central/v/fr.janalyse/lorem-ipsum_2.13.svg
+[mavenImg]: https://img.shields.io/maven-central/v/fr.janalyse/lorem-ipsum_3.svg
 [mavenLink]: https://search.maven.org/#search%7Cga%7C1%7Cfr.janalyse.lorem-ipsum
 
 [licenseImg]: https://img.shields.io/github/license/dacr/lorem-ipsum.svg
