@@ -1,4 +1,4 @@
-# Lorem ipsum [![Build Status][travisImg]][travisLink] [![License][licenseImg]][licenseLink] [![Maven][mavenImg]][mavenLink]
+# Lorem ipsum [![License][licenseImg]][licenseLink] [![Maven][mavenImg]][mavenLink]
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -20,14 +20,11 @@ println(LoremIpsum.generate(42*6).map(_.text).mkString("\n\n"))
 
 Using ammonite `amm` :
 ```scala
-import $ivy.`fr.janalyse::lorem-ipsum:0.0.3`
+import $ivy.`fr.janalyse::lorem-ipsum:1.0.5`
 import loremipsum._
 val story = LoremIpsum.generate(42*6,true).map(_.text).mkString("\n\n")
 println(story)
 ```
-
-[travisImg]: https://img.shields.io/travis/dacr/lorem-ipsum.svg
-[travisLink]:https://travis-ci.org/dacr/lorem-ipsum
 
 [mavenImg]: https://img.shields.io/maven-central/v/fr.janalyse/lorem-ipsum_2.13.svg
 [mavenLink]: https://search.maven.org/#search%7Cga%7C1%7Cfr.janalyse.lorem-ipsum
