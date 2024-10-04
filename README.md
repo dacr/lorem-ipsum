@@ -20,7 +20,7 @@ println(LoremIpsum.generate(42*6).map(_.text).mkString("\n\n"))
 
 Using ammonite `amm` :
 ```scala
-import $ivy.`fr.janalyse::lorem-ipsum:1.0.5`
+import $ivy.`fr.janalyse::lorem-ipsum:1.0.7`
 import loremipsum._
 val story = LoremIpsum.generate(42*6,true).map(_.text).mkString("\n\n")
 println(story)
