@@ -42,12 +42,12 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
   }
 
   it should "always start with Lorem ipsum by default" in {
-    LoremIpsum.generate(2) should equal(Paragraph(List("Lorem", "ipsum"))::Nil)
+    LoremIpsum.generate(2) should equal(Paragraph(List("Lorem", "ipsum")) :: Nil)
   }
 
   it should "generate paragraph starting with a Capitalize word" in {
     val paragraphsText = LoremIpsum.generate(5).map(_.text())
-    val firstWord = paragraphsText.headOption.value
+    val firstWord      = paragraphsText.headOption.value
     firstWord.headOption.value.isUpper shouldBe true
     firstWord.tail.exists(_.isUpper) shouldBe false
   }
@@ -66,8 +66,8 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
   }
 
   it should "always generate a first paragraph starting with Lorem Ipsum" in {
-    val tmpParagraphs = LoremIpsum.generate(1042)
-    val firstParagraphSize = tmpParagraphs.headOption.value.words.size
+    val tmpParagraphs       = LoremIpsum.generate(1042)
+    val firstParagraphSize  = tmpParagraphs.headOption.value.words.size
     val secondParagraphSize = tmpParagraphs.drop(1).headOption.value.words.size
 
     val paragraphs = LoremIpsum.generate(firstParagraphSize + secondParagraphSize, alwaysStartWithLorem = true)
@@ -75,29 +75,29 @@ class LoremIpsumTest extends AnyFlatSpec with should.Matchers {
   }
 
   it should "be able to regenerate paragraphs from sentences" in {
-    val paragraphs = LoremIpsum.generate(200,sentencesBased=true, randomize=true, alwaysStartWithLorem=true)
+    val paragraphs = LoremIpsum.generate(200, sentencesBased = true, randomize = true, alwaysStartWithLorem = true)
     paragraphs.flatMap(_.words).find(_.size == 0) shouldBe None
   }
 
   it should "only provide valid sentences (extracted from the given corpus)" in {
-    LoremIpsum.sentences.forall{case (sentence, wordCount)=>
+    LoremIpsum.sentences.forall { case (sentence, wordCount) =>
       sentence.forall(_.trim.size > 0) && wordCount > 0
     }
   }
 
-  for { (mode, value) <- List("sentences"->true, "paragraphs"->false)} {
+  for { (mode, value) <- List("sentences" -> true, "paragraphs" -> false) } {
     it should s"generate coherent punctuation in $mode mode" in {
       val text =
         LoremIpsum
           .generate(4242, sentencesBased = value, truncate = false, randomize = false)
           .map(_.text())
           .mkString("\n\n")
-      text should not include regex("[,?.;:]{2,}") // never two consecutive punctuation
-      text should not include regex("[,][^ ]") // Always a space after a comma
+      text should not include regex("[,?.;:]{2,}")  // never two consecutive punctuation
+      text should not include regex("[,][^ ]")      // Always a space after a comma
       text should not include regex("[^a-zA-Z][.]") // Always an alphabetical character before a dot
-      text should not include regex("[.] [a-z]") // Uppercase always after a dot
-      text should not include regex("^[a-z]") // Always starting with an uppercase character
-      text should not include regex("[^.]$") // Always finishing with a dot
+      text should not include regex("[.] [a-z]")    // Uppercase always after a dot
+      text should not include regex("^[a-z]")       // Always starting with an uppercase character
+      text should not include regex("[^.]$")        // Always finishing with a dot
     }
   }
 }

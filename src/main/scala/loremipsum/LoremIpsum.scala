@@ -19,26 +19,24 @@ package loremipsum
 import scala.util.Random
 
 case class Paragraph(words: List[String]) {
-  /**
-   * Format the paragraph into a string starting with a capitalize words and a final dot.
-   *
-   * @return the paragraph as a string
-   */
+
+  /** Format the paragraph into a string starting with a capitalize words and a final dot.
+    *
+    * @return
+    *   the paragraph as a string
+    */
   def text(): String = {
     val last = words.last.replaceAll("[^a-zA-Z]", "") + "."
     if (words.init != Nil) words.init.mkString(" ") + " " + last else last
   }
 }
 
-
-
-/**
- * LoremIpsum paragraph generator
- */
+/** LoremIpsum paragraph generator
+  */
 trait LoremIpsumBase {
   def corpus: Vector[String]
 
-  lazy val paragraphs:Vector[(Paragraph, Int)] =
+  lazy val paragraphs: Vector[(Paragraph, Int)] =
     corpus
       .map(_.stripMargin.trim.replaceAll("""\s{2,}""", " "))
       .map(_.split("""\s+"""))
@@ -46,79 +44,85 @@ trait LoremIpsumBase {
 
   type Sentence = List[String]
 
-  lazy val sentences:Vector[(Sentence,Int)] =
+  lazy val sentences: Vector[(Sentence, Int)] =
     corpus
       .map(_.trim.replaceAll("""\s{2,}""", " "))
       .flatMap(_.split("""\s*(?<=[?.])\s*"""))
       .map(_.split("""\s+""").toList)
       .map(words => words -> words.size)
 
-  /**
-   * Generate paragraphs of lorem ipsum
-   *
-   * @param wordCount            How many words all generated paragraph must contains
-   * @param alwaysStartWithLorem Shall the first paragraph starts with Lorem Ipsum ? default is false because of performance penalty
-   * @param truncate             Shall we generate strictly the requested number of words all round it to last sentence/paragraph size ?
-   * @param sentencesBased       Regenerate paragraph from sentences extracted from the corpus, a little bit slower.
-   * @param randomize            Randomize paragraphs or sentences initial order
-   * @return The list of generated paragraphs
-   */
+  /** Generate paragraphs of lorem ipsum
+    *
+    * @param wordCount
+    *   How many words all generated paragraph must contains
+    * @param alwaysStartWithLorem
+    *   Shall the first paragraph starts with Lorem Ipsum ? default is false because of performance penalty
+    * @param truncate
+    *   Shall we generate strictly the requested number of words all round it to last sentence/paragraph size ?
+    * @param sentencesBased
+    *   Regenerate paragraph from sentences extracted from the corpus, a little bit slower.
+    * @param randomize
+    *   Randomize paragraphs or sentences initial order
+    * @return
+    *   The list of generated paragraphs
+    */
   def generate(
     wordCount: Int,
     alwaysStartWithLorem: Boolean = false,
     truncate: Boolean = true,
     sentencesBased: Boolean = false,
-    randomize:Boolean = false
+    randomize: Boolean = false
   ): List[Paragraph] = {
     if (sentencesBased) generateSentencesBased(wordCount, alwaysStartWithLorem, truncate, randomize)
     else generateParagraphsBased(wordCount, alwaysStartWithLorem, truncate, randomize)
   }
 
-  private def generateSentencesBased(wordCount:Int, alwaysStartWithLorem:Boolean, truncate:Boolean, randomize:Boolean):List[Paragraph] = {
+  private def generateSentencesBased(wordCount: Int, alwaysStartWithLorem: Boolean, truncate: Boolean, randomize: Boolean): List[Paragraph] = {
     val sentencesSource: Vector[(Sentence, Int)] = if (randomize) {
-      if (alwaysStartWithLorem) sentences.head+:Random.shuffle(sentences.tail) else Random.shuffle(sentences)
+      if (alwaysStartWithLorem) sentences.head +: Random.shuffle(sentences.tail) else Random.shuffle(sentences)
     } else sentences
 
     @annotation.tailrec
     def worker(remain: Int, iteration: Int, accu: List[Sentence]): List[Sentence] = {
       sentencesSource(iteration % sentencesSource.size) match {
         case (sentence, count) if remain <= count && truncate => sentence.take(remain) :: accu
-        case (sentence, count) if remain <= count => sentence :: accu
-        case (sentence, count) => worker(remain - count, iteration + 1, sentence :: accu)
+        case (sentence, count) if remain <= count             => sentence :: accu
+        case (sentence, count)                                => worker(remain - count, iteration + 1, sentence :: accu)
       }
     }
-    def toParagraphs(sentences: List[Sentence]):List[Paragraph] = {
+    def toParagraphs(sentences: List[Sentence]): List[Paragraph]                  = {
       sentences
         .grouped(5)
         .map(s => Paragraph(s.flatten))
         .toList
     }
 
-    if (wordCount <= 0) Nil else {
+    if (wordCount <= 0) Nil
+    else {
       val results = worker(wordCount, 0, List.empty)
       if (alwaysStartWithLorem) toParagraphs(results.reverse) else toParagraphs(results)
     }
   }
 
-  private def generateParagraphsBased(wordCount: Int, alwaysStartWithLorem: Boolean, truncate:Boolean, randomize:Boolean): List[Paragraph] = {
-    val paragraphsSource:Vector[(Paragraph,Int)] = if (randomize) {
-      if (alwaysStartWithLorem) paragraphs.head+:Random.shuffle(paragraphs.tail) else Random.shuffle(paragraphs)
+  private def generateParagraphsBased(wordCount: Int, alwaysStartWithLorem: Boolean, truncate: Boolean, randomize: Boolean): List[Paragraph] = {
+    val paragraphsSource: Vector[(Paragraph, Int)]                                  = if (randomize) {
+      if (alwaysStartWithLorem) paragraphs.head +: Random.shuffle(paragraphs.tail) else Random.shuffle(paragraphs)
     } else paragraphs
     @annotation.tailrec
     def worker(remain: Int, iteration: Int, accu: List[Paragraph]): List[Paragraph] = {
       paragraphsSource(iteration % paragraphsSource.size) match {
         case (paragraph, count) if remain <= count && truncate => Paragraph(paragraph.words.take(remain)) :: accu
-        case (paragraph, count) if remain <= count => paragraph :: accu
-        case (paragraph, count) => worker(remain - count, iteration + 1, paragraph :: accu)
+        case (paragraph, count) if remain <= count             => paragraph :: accu
+        case (paragraph, count)                                => worker(remain - count, iteration + 1, paragraph :: accu)
       }
     }
-    if (wordCount <= 0) Nil else {
+    if (wordCount <= 0) Nil
+    else {
       val results = worker(wordCount, 0, List.empty)
       if (alwaysStartWithLorem) results.reverse else results
     }
   }
 }
-
 
 class LoremIpsum(val corpus: Vector[String]) extends LoremIpsumBase
 
