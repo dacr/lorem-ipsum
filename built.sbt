@@ -4,8 +4,8 @@ description  := "Simple lorem ipsum text generator"
 
 licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
 
-scalaVersion       := "3.3.7"
-crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.7")
+scalaVersion       := "3.3.9"
+crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.9")
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
