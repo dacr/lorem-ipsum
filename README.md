@@ -1,4 +1,4 @@
-# Lorem ipsum ![tests][tests-workflow] [![License][licenseImg]][licenseLink] [![Maven][mavenImg]][mavenLink]
+# Lorem ipsum [![License][licenseImg]][licenseLink] [![Maven][mavenImg]][mavenLink]
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -25,8 +25,6 @@ import loremipsum._
 val story = LoremIpsum.generate(42*6,true).map(_.text).mkString("\n\n")
 println(story)
 ```
-
-[tests-workflow]: https://github.com/dacr/lorem-ipsum/actions/workflows/scala.yml/badge.svg
 
 [mavenImg]: https://img.shields.io/maven-central/v/fr.janalyse/lorem-ipsum_3.svg
 [mavenLink]: https://search.maven.org/#search%7Cga%7C1%7Cfr.janalyse.lorem-ipsum

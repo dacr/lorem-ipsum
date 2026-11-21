@@ -2,14 +2,14 @@ name         := "lorem-ipsum"
 organization := "fr.janalyse"
 description  := "Simple lorem ipsum text generator"
 
-licenses += "NON-AI-APACHE2" -> url(s"https://github.com/non-ai-licenses/non-ai-licenses/blob/main/NON-AI-APACHE2")
+licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0"))
 
-scalaVersion       := "3.5.1"
-crossScalaVersions := Seq("2.12.20", "2.13.15", "3.5.1")
+scalaVersion       := "3.3.7"
+crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.7")
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % Test
 
 Test / testOptions += {
   val rel = scalaVersion.value.split("[.]").take(2).mkString(".")
